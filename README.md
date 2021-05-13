@@ -1,28 +1,29 @@
 # Linux_Kernel_Programming
 
 ### Kernel 프로그래밍은 version에 따라 작동여부가 달라짐
-- [라즈베리파이 OS 커널 빌드 공식 사이트](https://www.raspberrypi.org/documentation/linux/kernel/building.md)
-  ```
-  sudo apt install git bc bison flex libssl-dev make
-  // kernel source download
-  cd /usr/src
-  git clone --depth=1 https://github.com/raspberrypi/linux
-  cd linux
-  // using kernel7l because I am using raspberry ver 4
-  KERNEL=kernel7l
-  make bcm2711_defconfig
-  // build
-  // zImage : linux kernel
-  // modules : device driver
-  // dtbs : device driver info
-  make -j4 zImage modules dtbs
-  // result copy
-  sudo make modules_install
-  sudo cp arch/arm/boot/dts/*.dtb /boot/
-  sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
-  sudo cp arch/arm/boot/dts/overlays/README /boot/overlays
-  sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
-  ```
+- 라즈베리파이 커널 빌드 방법
+  - [라즈베리파이 OS 커널 빌드 공식 사이트](https://www.raspberrypi.org/documentation/linux/kernel/building.md)
+    ```
+    sudo apt install git bc bison flex libssl-dev make
+    // kernel source download
+    cd /usr/src
+    git clone --depth=1 https://github.com/raspberrypi/linux
+    cd linux
+    // using kernel7l because I am using raspberry ver 4
+    KERNEL=kernel7l
+    make bcm2711_defconfig
+    // build
+    // zImage : linux kernel
+    // modules : device driver
+    // dtbs : device driver info
+    make -j4 zImage modules dtbs
+    // result copy
+    sudo make modules_install
+    sudo cp arch/arm/boot/dts/*.dtb /boot/
+    sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
+    sudo cp arch/arm/boot/dts/overlays/README /boot/overlays
+    sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
+    ```
 - 사용 커널 버전
   - 5.10.35-v7l+
 
