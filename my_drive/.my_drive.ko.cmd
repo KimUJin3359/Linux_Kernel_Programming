@@ -1,0 +1,1 @@
+cmd_/home/pi/Desktop/device_driver/my_drive/my_drive.ko := ld -r  -EL  --build-id=sha1  -T scripts/module.lds -o /home/pi/Desktop/device_driver/my_drive/my_drive.ko /home/pi/Desktop/device_driver/my_drive/my_drive.o /home/pi/Desktop/device_driver/my_drive/my_drive.mod.o;  true
