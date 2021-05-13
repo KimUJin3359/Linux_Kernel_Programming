@@ -1,7 +1,7 @@
 # Linux_Kernel_Programming
 
 ### 목차
-- [Kernel 버전확인/빌드]()
+- [Kernel 버전확인/빌드](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#kernel-%EB%B2%84%EC%A0%84%ED%99%95%EC%9D%B8%EB%B9%8C%EB%93%9C)
 - [Device Driver](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#device-driver)
 - [Device Node/File](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#device-node)
 - [System Call](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#system-call)
