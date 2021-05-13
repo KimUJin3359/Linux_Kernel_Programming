@@ -9,6 +9,8 @@
 - [Bootloader](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#bootloader)
 - [U-Boot](https://github.com/KimUJin3359/Linux_Kernel_Programming/blob/master/README.md#u-boot)
 
+---
+
 ### Kernel 버전확인/빌드 
 - Kernel 프로그래밍은 **version에 따라 작동여부가 달라짐**
 - 커널 버전 확인 : uname -r
