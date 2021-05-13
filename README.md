@@ -182,3 +182,119 @@
     - 약 32GB까지 사용 가능
   - LPAE Disable 시
     - Legacy Master view Memory Map 사용
+
+---
+
+### Bootloader
+- 부팅 시 동작되는 프로그램
+- Disk에 저장되어 있는 운영체제를 실행시키는 역할
+- 부트스트랩 or 부트로더라고 함
+- 라즈베리파이는 자체 부트로더를 가짐
+- 정리 : 부팅 시 OS를 메모리 적재 후 레지스터 PC 값을 바꾸어 Run 시켜줌
+- 다양한 기능
+  - Command shell 제공
+  - 장치 테스트 가능
+- Linux Kernel
+  - 리눅스의 핵심 동작 코드
+- Image
+  - 램에 그대로 올라가면 실행 가능해지도록 만들어진 Binary File
+- Linux Kernel Image
+  - 리눅스 소스코드를 빌드 후, 즉시 램에 올라가면 동작되도록 만들어진 Binary File
+  - 리눅스 Build 시 만들어지는 최종 결과물
+  - 압축되어 관리되다가 부트로더가 압축을 풀어 메모리에 적재
+  - zImage : gzip으로 압축된 Kernel Image
+  - bzImage : big zImage, 파일 크기가 큰 Kernel Image
+
+#### PC Booting Process
+- CMOS
+  - CMOS Chipset (RTC/NVRAM)
+  - CMOS Data를 저장함(메모리 크기, 부팅순서, HW구성 정보 등)
+  - 배터리 전원을 사용
+  - 설정 값들이 적혀 있음
+- BIOS
+  - 기본적인 I/O를 위한 Firmware(Basic I/O System)
+  - 컴퓨터 부팅 시 바로 BIOS(Firmware)가 동작을 시작함
+  - ROM BIOS에 BIOS 설정 Utility가 들어있음
+  - CMOS의 설정 값들을 변경 가능
+- POST
+  - Power-On Self-Test
+  - BIOS에서 Power를 켜자마자 주변장치들을 검사하는 과정
+  - BIOS가 POST를 하고 있을 때 log message가 출력 됨
+- UEFI
+  - Unified Extensible Firmware Interface(통일 확장 인터페이스0
+  - BIOS를 대체하는 Firmware(BIOS -> UEFI)
+  - BIOS와 큰 차이는 화려한 그래픽 UI/2.2TB 이상 디스크 사용을 위한 GPT 지원
+- GPT
+  - GUID 파티션 테이블
+  - BIOS 당시 파티션 Table은 MBR에 기록
+  - UEFI에서 지원이 가능
+    - 2.2TB 이상 디스크를 사용하기 위해서는 메인보드가 BIOS가 아닌, UEFI를 써야 함
+- GRUB2
+  - GNU 프로젝트에서 개발한 부트로더
+  - 현 대부분 리눅스 배포판은 GRUB2를 사용
+
+---
+
+### U-Boot
+- universal boot loader
+- 임베디드 리눅스에 가장 많이 쓰이는 Open Bootloader
+- USB, TCP/IP, Flash 제어 가능
+- 부트로더
+  - x64_86
+    - 0 단계 : ROM 코드
+    - 1 단계 : BIOS or UEFI
+    - 2 단계 : Bootloader (GRUB)
+    - Linux Kernel 실행
+  - ARM
+    - 0, 1 단계 : 칩셋 사 제공
+    - 2 단계 : Bootloader (u-boot)
+    - Linux Kernel 실행
+
+#### u-boot 동작 전
+- BL0와 BL1은 칩셋사에서 Code Release 함
+- BL0
+  - CPU 내부에 iROM과 iRAM 존재
+  - iROM에 있는 BL0 코드를 iRAM에 복사 후 코드를 수행
+  - SDRAM 설정, PMIC, UART Init, NAND 초기화
+  - OM(Operating Mode, DIP switch) 확인
+  - NAND에 있는 BL1을 DRAM에 올리고 제어권을 넘김
+- BL1
+  - NAND 앞부분에 저장되어 있음
+  - BL0은 iROM에서 읽어 iRAM에서 동작했지만, BL1은 NAND에서 읽어 iRAM에서 동작시킴
+  - Clock, MMU 등 초기화
+  - u-boot 코드를 SDRAM에서 복사 후 제어권을 넘김
+
+#### u-boot command
+- echo '메세지'
+  - 입력한 값이 그대로 출력
+- printenv
+  - 환경변수들을 모두 출력
+  - 변수 이름을 출력하려면 \$변수명 입력
+  - bootcmd
+    - 특정 시간까지 입력이 되지 않으면 수행할 명령어들
+- ls
+  - 장치이름 [device 번호]:[파티션] [경로]
+  - 특정 장치의 파일 내용을 볼 수 있음
+  - ls mmc 0:1 /
+    - mmc : multi-media card(SD카드)
+    - 0 : device
+    - 1 : partition
+    - / : root directory
+- mmc
+  - disk 제어, Read/Write/Erase 가능
+- md/nm
+  - md : 메모리 출력
+  - nm : 메모리 수정
+
+---
+
+#### 라즈베리파이 부팅
+- ROM의 부트로더
+  - recovery.bin이 있는지 확인 후 복구 진행
+  - bootcode.bin 호출
+- bootcode.bin
+  - config.txt 읽음
+  - start.elf를 호출(GPU 활성화)
+- start.elf
+  - ARM Core 활성화
+  - kernel.img 호출
