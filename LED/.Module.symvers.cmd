@@ -1,1 +1,0 @@
-cmd_/home/pi/Desktop/device_driver/LED/Module.symvers := sed 's/ko$$/o/' /home/pi/Desktop/device_driver/LED/modules.order | scripts/mod/modpost -m -a   -o /home/pi/Desktop/device_driver/LED/Module.symvers -e -i Module.symvers   -T -

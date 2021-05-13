@@ -1,1 +1,0 @@
-cmd_/home/pi/Desktop/device_driver/LED/LED.ko := ld -r  -EL  --build-id=sha1  -T scripts/module.lds -o /home/pi/Desktop/device_driver/LED/LED.ko /home/pi/Desktop/device_driver/LED/LED.o /home/pi/Desktop/device_driver/LED/LED.mod.o;  true
