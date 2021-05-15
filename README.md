@@ -117,10 +117,29 @@
 
 #### ioctl
 - ioctl(fd, CMD, &args)
+  - file descriptor
+  - CMD : 구분자
+  - args : 추가 정보
 - 여러가지 옵션을 줄 수 있음
   - APP에서 CMD에 정수 값을 보냄
   - 드라이버에서 CMD 값에 따라 select 문으로 분기를 나눠 코드 추가 가능
   - args에 포인터를 전달하여 APP의 다량의 데이터를 driver로 전달 가능
+- ioctl 동작 분류
+  - simple ioctl : 구분 번호만 주어지는 경우
+  - read ioctl : 데이터를 읽는 경우
+  - write ioctl : 데이터를 쓰는 경우
+  - r/w ioctl : 데이터를 읽고/쓰는 경우
+- CMD 구분자
+  - Direction(2bit) \ Size(14bit) \ Type(8bit) \ Number(8bit)
+  - Read : R/W
+  - Size : 데이터 크기
+  - Type : 매직넘버
+  - Number : 구분 번호
+  - Kernel 제공 매크로
+    - IO(type, number)
+    - IOR(type, number, 전송 받을 데이터 타입)
+    - IOW(type, number, 전송 보낼 데이터 타입)
+    - IOWR(type, number, 전송 주고 받을 데이터 타입)
 
 #### ioremap
 - asm/io.h에 존재
