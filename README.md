@@ -86,6 +86,12 @@
   - 커널 소스코드 / 헤더 경로
     - /usr/src
     - /lib/modules/커널버전/build
+  - standard library 불가능
+    ```
+    #include <string.h> -> #include <linux/string.h>
+    printf("a"); -> printk(KERN_INFO "a");
+    malloc(64); -> kmalloc(64, GFP_KERNEL);
+    ```
 - **모듈 만들기**
   - main 함수가 없음
   - 라이센스 설정을 해주어야 됨
@@ -115,32 +121,6 @@
   - C 옵션 : 해당 디렉토리로 이동해서 make를 수행
   - M=$(PWD) : 결과물이 현재 디렉토리에 생성
 
-#### ioctl
-- ioctl(fd, CMD, &args)
-  - file descriptor
-  - CMD : 구분자
-  - args : 추가 정보
-- 여러가지 옵션을 줄 수 있음
-  - APP에서 CMD에 정수 값을 보냄
-  - 드라이버에서 CMD 값에 따라 select 문으로 분기를 나눠 코드 추가 가능
-  - args에 포인터를 전달하여 APP의 다량의 데이터를 driver로 전달 가능
-- ioctl 동작 분류
-  - simple ioctl : 구분 번호만 주어지는 경우
-  - read ioctl : 데이터를 읽는 경우
-  - write ioctl : 데이터를 쓰는 경우
-  - r/w ioctl : 데이터를 읽고/쓰는 경우
-- CMD 구분자
-  - Direction(2bit) \ Size(14bit) \ Type(8bit) \ Number(8bit)
-  - Read : R/W
-  - Size : 데이터 크기
-  - Type : 매직넘버
-  - Number : 구분 번호
-  - Kernel 제공 매크로
-    - IO(type, number)
-    - IOR(type, number, 전송 받을 데이터 타입)
-    - IOW(type, number, 전송 보낼 데이터 타입)
-    - IOWR(type, number, 전송 주고 받을 데이터 타입)
-
 #### ioremap
 - asm/io.h에 존재
 - **커널에서 HW 메모리에 접근** 가능
@@ -152,6 +132,55 @@
 - 적재된 커널 module 확인 : lsmod
 - 커널 로그 모니터링 : dmesg
   - w 옵션 : 실시간 
+
+---
+
+#### ioctl
+- ioctl(fd, CMD, &args)
+  - file descriptor
+  - CMD : 구분자
+  - args : 추가 정보
+- 여러가지 옵션을 줄 수 있음
+  - APP에서 CMD에 정수 값을 보냄
+  - 드라이버에서 CMD 값에 따라 select 문으로 분기를 나눠 코드 추가 가능
+  - args에 포인터를 전달하여 APP의 다량의 데이터를 driver로 전달 가능
+
+#### ioctl 동작 분류
+- simple ioctl : 구분 번호만 주어지는 경우
+- read ioctl : 데이터를 읽는 경우
+- write ioctl : 데이터를 쓰는 경우
+- r/w ioctl : 데이터를 읽고/쓰는 경우
+
+#### CMD 구분자
+- Direction(2bit) \ Size(14bit) \ Type(8bit) \ Number(8bit)
+- Read : R/W
+- Size : 데이터 크기
+- Type : 매직넘버
+- Number : 구분 번호
+- Kernel 제공 매크로
+  - IO(type, number)
+  - IOR(type, number, 전송 받을 데이터 타입)
+  - IOW(type, number, 전송 보낼 데이터 타입)
+  - IOWR(type, number, 전송 주고 받을 데이터 타입)
+
+#### 값을 전달하는 방법
+- ioctl 마지막 argument에 값을 전달
+```
+char buf[32] = "Hello This is an app memory";
+ioctl(fd, _IO('A',5), buf);
+```
+- user-space vs kernel-space
+  - user space는 kernel memory에 접근하지 못함
+  - kernel code는 user-space에 pointer로 접근하지 못하게 해야함
+    - 잘못된 user address는 kernel crash를 발생시킬 수 있음
+- copy_{from|to}_user
+```
+// copy user-space memory to kernel-space memory
+// Node를 전달
+static inline long copy_from_user(void *to, const void __user *from, unsigned long n);
+// copy kernel-space memory to user-space memory
+static inline long copy_to_user(void __user *to, cons void *from, unsigned long n);
+```
 
 ---
 
